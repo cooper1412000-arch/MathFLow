@@ -1,0 +1,77 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information, distinguishing between students and teachers.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["student", "teacher"] },
+        "schoolName": { "type": "string", "description": "Only for teachers" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role", "createdAt"]
+    },
+    "Class": {
+      "title": "Class",
+      "description": "A class created by a teacher.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "teacherId": { "type": "string", "description": "UID of the teacher" },
+        "joinCode": { "type": "string", "description": "Unique code for students to join" },
+        "studentIds": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "teacherId", "joinCode", "studentIds", "createdAt"]
+    },
+    "Task": {
+      "title": "Task",
+      "description": "A task assigned to a class.",
+      "type": "object",
+      "properties": {
+        "classId": { "type": "string" },
+        "teacherId": { "type": "string" },
+        "topicId": { "type": "string", "description": "ID from MATH_DATA" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["classId", "teacherId", "topicId", "title", "createdAt"]
+    },
+    "TaskCompletion": {
+      "title": "TaskCompletion",
+      "description": "Record of a student completing a task.",
+      "type": "object",
+      "properties": {
+        "taskId": { "type": "string" },
+        "studentId": { "type": "string" },
+        "classId": { "type": "string" },
+        "score": { "type": "number" },
+        "total": { "type": "number" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["taskId", "studentId", "classId", "score", "total", "completedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores user profiles."
+    },
+    "/classes/{classId}": {
+      "schema": { "$ref": "#/entities/Class" },
+      "description": "Stores classes."
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Stores tasks assigned to classes."
+    },
+    "/taskCompletions/{completionId}": {
+      "schema": { "$ref": "#/entities/TaskCompletion" },
+      "description": "Stores records of completed tasks."
+    }
+  }
+}
